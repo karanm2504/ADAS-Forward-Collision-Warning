@@ -1,6 +1,14 @@
 
 #include <stdio.h>
 
+
+typedef enum
+{
+    SAFE,
+    WARNING,
+    CRITICAL
+} WarningLevel;
+
 // Calculate Time-to-Collision (TTC)
 float calculateTTC(float ego_speed,
                    float lead_speed,
@@ -33,19 +41,20 @@ float calculateTTC(float ego_speed,
 }
 
 // Classify collision warning level
-void checkWarning(float ttc)
+
+int getWarningLevel(float ttc)
 {
     if (ttc > 3.0f)
     {
-        printf("Status: SAFE\n");
+        return 0;  // SAFE
     }
     else if (ttc > 1.5f)
     {
-        printf("Status: WARNING\n");
+        return 1;  // WARNING
     }
     else
     {
-        printf("Status: CRITICAL\n");
+        return 2;  // CRITICAL
     }
 }
 
@@ -54,25 +63,39 @@ int main(void)
     // Simulation inputs
     float ego_speed = 90.0f;
     float lead_speed = 54.0f;
-    float distance = 15.0f;
+    float distance = 10.0f;
 
     // Calculate TTC
     float ttc = calculateTTC(ego_speed, lead_speed, distance);
 
     // Handle result
     if (ttc == -2.0f)
+{
+    printf("Error: Invalid input\n");
+}
+else if (ttc == -1.0f)
+{
+    printf("Vehicles are not approaching\n");
+}
+else
+{
+    printf("TTC = %.2f seconds\n", ttc);
+
+    int warning_level = getWarningLevel(ttc);
+
+   if (warning_level == SAFE)
     {
-        printf("Error: Invalid input\n");
+    printf("Status: SAFE\n");
     }
-    else if (ttc == -1.0f)
+    else if (warning_level == WARNING)
     {
-        printf("Vehicles are not approaching\n");
+    printf("Status: WARNING\n");
     }
     else
     {
-        printf("TTC = %.2f seconds\n", ttc);
-        checkWarning(ttc);
+    printf("Status: CRITICAL\n");
     }
+}
 
     return 0;
 }
