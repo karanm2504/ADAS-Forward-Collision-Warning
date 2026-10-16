@@ -63,7 +63,15 @@ int main(void)
     // Simulation inputs
     float ego_speed = 90.0f;
     float lead_speed = 54.0f;
-    float distance = 10.0f;
+    float distance;
+
+    printf("Enter distance in metres: ");
+
+    if (scanf("%f", &distance) != 1)
+    {
+    printf("Error: Invalid distance input\n");
+    return 1;
+    }
 
     // Calculate TTC
     float ttc = calculateTTC(ego_speed, lead_speed, distance);
